@@ -18,7 +18,7 @@
         state: started
 
     - name: Initiate MongoDB replication
-      command: mongo --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
+      command: "mongo --eval \"rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]})\""
       when: mongodb_replication
 
     - name: Add MongoDB replication members
@@ -28,4 +28,4 @@
 
 # ansible-playbook playbook.yml -e "target_hosts='mongo_servers' mongodb_replication=true mongodb_replication_members='[\"mongo_server_2:27017\", \"mongo_server_3:27017\"]'"
 
-# ansible-playbook playbook.yml -e "target_hosts='192.168.1.10,192.168.1.11,192.168.1.12' mongodb_replication=true mongodb_replication_members='[\"mongo_server_2:27017\", \"mongo_server_3:27017\"]'"
+# ansible-playbook playbook.yml -e "target_hosts='mongo_servers' mongodb_replication=true mongodb_replication_members='[\"mongo_server_2:27017\", \"mongo_server_3:27017\"]'"
