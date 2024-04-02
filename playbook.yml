@@ -22,12 +22,16 @@
     - name: Update apt-get repo and cache
       apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
 
-
     - name: Install MongoDB dependencies
       apt:
-        name: mongodb-org-database
-        state: present
-        update_cache: yes
+        pkg:
+          - mongodb-org-server
+          - mongodb-org-mongos
+          - mongodb-org-shell
+          - mongodb-org-tools 
+          - mongodb-org-database
+        state: latest
+        update_cache: true
 
     - name: Install MongoDB
       apt:
