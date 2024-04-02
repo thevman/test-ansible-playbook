@@ -5,56 +5,47 @@
   vars:
     mongodb_replication: "{{ mongodb_replication | default(false) }}"
     mongodb_replication_members: "{{ mongodb_replication_members | default([]) }}"
-
+    mongodb_version: "5.0"
   tasks:
-    - name: Install curl and gnupg
-      apt:
-        pkg:
-          - gnupg 
-          - curl 
-        state: latest
-        update_cache: true
-
     - name: Import the MongoDB public GPG Key
       apt_key:
-        url: https://www.mongodb.org/static/pgp/server-7.0.asc
+        url: https://www.mongodb.org/static/pgp/server-5.0.asc
         state: present
-        keyring: /usr/share/keyrings/mongodb-server-7.0.gpg
 
     - name: Update the package list
-      ansible.builtin.apt:
+      apt:
         update_cache: yes
 
     - name: Add the MongoDB repository
       apt_repository:
-        repo: deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse
+        repo: deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/{{ mongodb_version }} multiverse
         state: present
         update_cache: yes
 
-    - name: Update apt-get repo and cache
-      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
-
-    - name: Install MongoDB dependencies
-      apt:
-        pkg:
-          - libcurl4 
-          #- libgssapi-krb5-2 
-          #- libldap-2.4-2 
-          #- libwrap0 
-          #- libsasl2-2 
-          #- libsasl2-modules 
-          #- libsasl2-modules-gssapi-mit 
-          #- snmp 
-          #- openssl 
-          #- liblzma5
-          - mongodb-org-server
-          - mongodb-org-mongos
-          - mongodb-org-shell
-          - mongodb-org-tools 
-          - mongodb-org-database
-        state: latest
-        update_cache: true
-
+    #- name: Update apt-get repo and cache
+    #  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+#
+    #- name: Install MongoDB dependencies
+    #  apt:
+    #    pkg:
+    #      #- libcurl4 
+    #      #- libgssapi-krb5-2 
+    #      #- libldap-2.4-2 
+    #      #- libwrap0 
+    #      #- libsasl2-2 
+    #      #- libsasl2-modules 
+    #      #- libsasl2-modules-gssapi-mit 
+    #      #- snmp 
+    #      #- openssl 
+    #      #- liblzma5
+    #      - mongodb-org-server
+    #      - mongodb-org-mongos
+    #      - mongodb-org-shell
+    #      - mongodb-org-tools 
+    #      - mongodb-org-database
+    #    state: latest
+    #    update_cache: true
+#
     - name: Install MongoDB
       apt:
         name: mongodb-org
