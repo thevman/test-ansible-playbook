@@ -13,6 +13,10 @@
         url: https://www.mongodb.org/static/pgp/server-5.0.asc
         state: present
 
+    - name: Update the package list
+      ansible.builtin.apt:
+        update_cache: yes
+        
     - name: Add the MongoDB repository
       apt_repository:
         repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse
