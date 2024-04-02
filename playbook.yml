@@ -6,6 +6,12 @@
     mongodb_replication: "{{ mongodb_replication | default(false) }}"
     mongodb_replication_members: "{{ mongodb_replication_members | default([]) }}"
     mongodb_version: "5.0"
+    mongodb_dbpath: "/var/lib/mongodb"
+    mongodb_journal_enabled: true
+    mongodb_logpath: "/var/log/mongodb/mongod.log"
+    mongodb_port: "27017"
+    mongodb_authorization: enabled
+    mongodb_replication: true
   tasks:
     - name: Import the MongoDB public GPG Key
       apt_key:
@@ -22,41 +28,17 @@
         state: present
         update_cache: yes
 
-    #- name: Update apt-get repo and cache
-    #  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
-#
-    #- name: Install MongoDB dependencies
-    #  apt:
-    #    pkg:
-    #      #- libcurl4 
-    #      #- libgssapi-krb5-2 
-    #      #- libldap-2.4-2 
-    #      #- libwrap0 
-    #      #- libsasl2-2 
-    #      #- libsasl2-modules 
-    #      #- libsasl2-modules-gssapi-mit 
-    #      #- snmp 
-    #      #- openssl 
-    #      #- liblzma5
-    #      - mongodb-org-server
-    #      - mongodb-org-mongos
-    #      - mongodb-org-shell
-    #      - mongodb-org-tools 
-    #      - mongodb-org-database
-    #    state: latest
-    #    update_cache: true
-#
     - name: Install MongoDB
       apt:
         name: mongodb-org
         state: present
         update_cache: yes
-
-    - name: Start MongoDB service
-      service:
-        name: mongod
-        state: started
-        enabled: yes
+            
+    - name: Configure MongoDB
+      template:
+        src: mongod.conf.j2
+        dest: /etc/mongod.conf
+      notify: restart mongod
 
     - name: Initiate MongoDB replication
       command: "mongo --eval \"rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]})\""
@@ -67,6 +49,11 @@
       with_items: "{{ mongodb_replication_members }}"
       when: mongodb_replication and mongodb_replication_members is defined
 
+  handlers:
+    - name: restart mongod
+      service:
+        name: mongod
+        state: restarted
 # ansible-playbook playbook.yml -e "target_hosts='mongo_servers' mongodb_replication=true mongodb_replication_members='[\"mongo_server_2:27017\", \"mongo_server_3:27017\"]'"
 
 # ansible-playbook playbook.yml -e "target_hosts='mongo_servers' mongodb_replication=true mongodb_replication_members='[\"mongo_server_2:27017\", \"mongo_server_3:27017\"]'"
