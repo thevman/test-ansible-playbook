@@ -19,6 +19,7 @@
       apt_key:
         url: https://www.mongodb.org/static/pgp/server-7.0.asc
         state: present
+        keyring: /usr/share/keyrings/mongodb-server-7.0.gpg
 
     - name: Update the package list
       ansible.builtin.apt:
