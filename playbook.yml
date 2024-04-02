@@ -25,6 +25,7 @@
     - name: Install MongoDB dependencies
       apt:
         pkg:
+          - libc6
           - mongodb-org-server
           - mongodb-org-mongos
           - mongodb-org-shell
