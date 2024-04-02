@@ -25,7 +25,16 @@
     - name: Install MongoDB dependencies
       apt:
         pkg:
-          - libc6
+          - libcurl4 
+          - libgssapi-krb5-2 
+          - libldap-2.5-0 
+          - libwrap0 
+          - libsasl2-2 
+          - libsasl2-modules 
+          - libsasl2-modules-gssapi-mit 
+          - snmp 
+          - openssl 
+          - liblzma5
           - mongodb-org-server
           - mongodb-org-mongos
           - mongodb-org-shell
