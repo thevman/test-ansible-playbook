@@ -45,7 +45,7 @@
 
     - name: Add MongoDB replication members
       command: mongo --eval 'rs.add("{{ item }}")'
-      with_items: "{{ mongodb_replication_members }}"
+      loop: "{{ mongodb_replication_members }}"
       when: mongodb_replication and mongodb_replication_members is defined
 
   handlers:
